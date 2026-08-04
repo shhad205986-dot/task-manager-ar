@@ -31,6 +31,7 @@ jobs:
             -exec rm -rf {} +
           cp -a .bootstrap/. .
           rm -rf .bootstrap bootstrap project.tar.xz
+          rm -f .github/workflows/bootstrap-project.yml
       - name: Commit extracted files
         shell: bash
         run: |
