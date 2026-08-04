@@ -3,7 +3,7 @@ name: Bootstrap project files
 on:
   push:
     paths:
-      - project.zip.b64
+      - bootstrap/READY
   workflow_dispatch:
 
 permissions:
@@ -18,7 +18,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          base64 --decode project.zip.b64 > project.zip
+          cat bootstrap/part-* | base64 --decode > project.zip
           rm -rf .bootstrap
           mkdir .bootstrap
           unzip -q project.zip -d .bootstrap
@@ -26,11 +26,11 @@ jobs:
             ! -name .git \
             ! -name .github \
             ! -name .bootstrap \
-            ! -name project.zip.b64 \
+            ! -name bootstrap \
             ! -name project.zip \
             -exec rm -rf {} +
           cp -a .bootstrap/. .
-          rm -rf .bootstrap project.zip project.zip.b64
+          rm -rf .bootstrap bootstrap project.zip
       - name: Commit extracted files
         shell: bash
         run: |
