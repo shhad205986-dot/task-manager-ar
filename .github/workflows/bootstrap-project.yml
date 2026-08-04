@@ -13,7 +13,9 @@ jobs:
   bootstrap:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
       - name: Extract project archive
         shell: bash
         run: |
@@ -32,6 +34,7 @@ jobs:
           cp -a .bootstrap/. .
           rm -rf .bootstrap bootstrap project.tar.xz
           rm -f .github/workflows/bootstrap-project.yml
+
       - name: Commit extracted files
         shell: bash
         run: |
