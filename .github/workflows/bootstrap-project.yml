@@ -18,19 +18,19 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cat bootstrap/part-* | base64 --decode > project.zip
           rm -rf .bootstrap
           mkdir .bootstrap
-          unzip -q project.zip -d .bootstrap
+          cat bootstrap/xz-* | base64 --decode > project.tar.xz
+          tar -xJf project.tar.xz -C .bootstrap
           find . -mindepth 1 -maxdepth 1 \
             ! -name .git \
             ! -name .github \
             ! -name .bootstrap \
             ! -name bootstrap \
-            ! -name project.zip \
+            ! -name project.tar.xz \
             -exec rm -rf {} +
           cp -a .bootstrap/. .
-          rm -rf .bootstrap bootstrap project.zip
+          rm -rf .bootstrap bootstrap project.tar.xz
       - name: Commit extracted files
         shell: bash
         run: |
