@@ -1,0 +1,45 @@
+name: Bootstrap project files
+
+on:
+  push:
+    paths:
+      - project.zip.b64
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Extract project archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          base64 --decode project.zip.b64 > project.zip
+          rm -rf .bootstrap
+          mkdir .bootstrap
+          unzip -q project.zip -d .bootstrap
+          find . -mindepth 1 -maxdepth 1 \
+            ! -name .git \
+            ! -name .github \
+            ! -name .bootstrap \
+            ! -name project.zip.b64 \
+            ! -name project.zip \
+            -exec rm -rf {} +
+          cp -a .bootstrap/. .
+          rm -rf .bootstrap project.zip project.zip.b64
+      - name: Commit extracted files
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Publish Arabic task manager application"
+            git push
+          fi
